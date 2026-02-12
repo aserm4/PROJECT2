@@ -1,0 +1,150 @@
+/* Ref class function definitions
+ * Computer Science, MVNU
+ * CSC-3004 Introduction to Software Development
+ *
+ * NOTE: You may add code to this file, but do not
+ * delete any code or delete any comments.
+ *
+ * STUDENT NAME: shane busch
+ */
+
+#include "Ref.h"
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+/* GetNextToken - general routine for getting next token from a string
+ * Parameters
+ *    str - string to search. search is destructive, i.e., token is removed.
+ *    delimiters - string, a list of characters to use a delimiters between tokens
+ * Returns: string token (removed from str)
+ */
+string GetNextToken(string& str, const string& delimiters = " ")
+{
+   // Skip delimiters at beginning                                          
+   string::size_type startPos = str.find_first_not_of(delimiters, 0);
+  
+   // Find position of delimiter at end of token                                           
+   string::size_type endPos = str.find_first_of(delimiters, startPos);
+
+   // Found a token, remove it from string, and return it                       
+   string next = str.substr(startPos, endPos - startPos);
+   string rest = str.substr(endPos - startPos + 1, string::npos);
+   str = rest;
+   return(next);
+}
+
+// Ref member functions
+
+// Default constructor
+Ref::Ref() {book = 0; chapter = 0; verse = 0;}  	
+
+// Parse constructor - receives a line "34:5:7 text"
+Ref::Ref(const string s)
+{ 
+   string rtext = s; // make local copy of string to avoid modifying parameter
+   // parse the reference - notice, currently there is no error checking!
+    
+   // Get book number
+   string strbook = GetNextToken(rtext,":");
+   book = atoi(strbook.c_str());
+    
+   // Get the chapter number
+   string strchap = GetNextToken(rtext,":");
+   chapter = atoi(strchap.c_str());
+    
+   // Get the verse number
+   string strverse = GetNextToken(rtext," ");
+   verse = atoi(strverse.c_str());
+}
+
+// Construct Ref from three integers
+Ref::Ref(const int b, const int c, const int v) 
+{ 	
+   book = b;
+   chapter = c;
+   verse = v;
+}
+
+// Accessors
+int Ref::getBook() {return book;}	     // Access book number
+int Ref::getChapter() {return chapter;}	 // Access chapter number
+int Ref::getVerse() {return verse;};     // Access verse number
+
+
+// REQUIRED: == comparison
+bool Ref::operator==(const Ref & ref) const
+{
+   // TODO: implement comparison functions
+   if (book == ref.book && chapter == ref.chapter && verse == ref.verse)
+    {
+        return true;
+	}
+   return false;
+}
+
+// OPTIONAL: define < and > comparisons
+
+
+// Display Reference
+void Ref::display()
+{ 	
+   // TODO: modify display function to show book name instead of book number
+   if (book >= 1 && book <= 66)
+      cout << bookNumberToName(book);
+   else
+      cout << book;   // fallback if invalid
+
+   cout << " " << chapter << ":" << verse;
+}
+
+int Ref::bookNameToNumber(const std::string& name)
+{
+    static const std::string books[] = {
+        "", "Genesis","Exodus","Leviticus","Numbers","Deuteronomy","Joshua","Judges","Ruth",
+        "1Samuel","2Samuel","1Kings","2Kings","1Chronicles","2Chronicles","Ezra","Nehemiah",
+        "Esther","Job","Psalms","Proverbs","Ecclesiastes","Song","Isaiah","Jeremiah","Lamentations",
+        "Ezekiel","Daniel","Hosea","Joel","Amos","Obadiah","Jonah","Micah","Nahum","Habakkuk",
+        "Zephaniah","Haggai","Zechariah","Malachi","Matthew","Mark","Luke","John","Acts","Romans",
+        "1Corinthians","2Corinthians","Galatians","Ephesians","Philippians","Colossians",
+        "1Thessalonians","2Thessalonians","1Timothy","2Timothy","Titus","Philemon","Hebrews",
+        "James","1Peter","2Peter","1John","2John","3John","Jude","Revelation"
+    };
+
+    // convert input name to lowercase
+    std::string lowerName = name;
+    for (char &c : lowerName) {
+        if (c >= 'A' && c <= 'Z') c = c - 'A' + 'a';
+    }
+
+    for (int i = 1; i <= 66; ++i) {
+        // convert book name to lowercase
+        std::string lowerBook = books[i];
+        for (char &c : lowerBook) {
+            if (c >= 'A' && c <= 'Z') c = c - 'A' + 'a';
+        }
+
+        if (lowerBook == lowerName)
+            return i;
+    }
+
+    return 0; // not found
+}
+
+std::string Ref::bookNumberToName(int num)
+{
+    static const std::string books[] = {
+        "", "Genesis","Exodus","Leviticus","Numbers","Deuteronomy","Joshua","Judges","Ruth",
+        "1Samuel","2Samuel","1Kings","2Kings","1Chronicles","2Chronicles","Ezra","Nehemiah",
+        "Esther","Job","Psalms","Proverbs","Ecclesiastes","Song","Isaiah","Jeremiah","Lamentations",
+        "Ezekiel","Daniel","Hosea","Joel","Amos","Obadiah","Jonah","Micah","Nahum","Habakkuk",
+        "Zephaniah","Haggai","Zechariah","Malachi","Matthew","Mark","Luke","John","Acts","Romans",
+        "1Corinthians","2Corinthians","Galatians","Ephesians","Philippians","Colossians",
+        "1Thessalonians","2Thessalonians","1Timothy","2Timothy","Titus","Philemon","Hebrews",
+        "James","1Peter","2Peter","1John","2John","3John","Jude","Revelation"
+    };
+
+    if (num < 1 || num > 66) return "Unknown";
+    return books[num];
+}
