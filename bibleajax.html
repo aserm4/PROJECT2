@@ -62,6 +62,7 @@
      // NOTE: This page must be loaded from cs.mvnu.edu to avoid a cross-origin request violation.
      XMLHttp.open("GET", "/class/csc3004/shabusch/cgi-bin/bibleajax.cgi?"
                   + "search_type=" + searchType.value
+                  + "&BibleV=" + document.getElementById('BibleV').value
                   + "&book=" + document.getElementById('book').value
                   + "&chapter=" + document.getElementById('chapter').value
                   + "&verse=" + document.getElementById('verse').value
@@ -102,12 +103,12 @@
   <tr>
   <td align=right valign=top>Bible version</td>
   <td align=left valign=top>
-  <select name="BibleV" id=Bible>
+  <select name="BibleV" id=BibleV>
   <option value="1">WEB
-  <option value="2">KJV WIP
-  <option value="3">DBY WIP
-  <option value="4">YLT WIP
-  <option value="5">webster WIP
+  <option value="2">KJV
+  <option value="3">DBY
+  <option value="4">YLT
+  <option value="5">webster
   </select>
   </td>
   </tr>
@@ -191,15 +192,15 @@
 
   <tr>
   <td align=right valign=top>Chapter</td>
-  <td align=left valign=top><input name="chapter" type="number" min="1" max="150" maxlength=3  id=chapter></td>
+  <td align=left valign=top><input name="chapter" type="number" min="1" max="150" id=chapter></td>
   </tr>
   <tr>
   <td align=right valign=top>Verse</td>
-  <td align=left valign=top><input name="verse" type="number" min="1" max="150" maxlength=3 id=verse></td>
+  <td align=left valign=top><input name="verse" type="number" min="1" max="150" id=verse></td>
   </tr>
   <tr>
   <td align=right valign=top>Number of verses</td>
-  <td align=left valign=top><input name="num_verse" type="number" min="1" maxlength=3 id=num_verse></td>
+  <td align=left valign=top><input name="num_verse" type="number" min="1" max="31102" id=num_verse></td>
   </tr>
 </table>
 

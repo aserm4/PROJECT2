@@ -51,6 +51,7 @@ int main()
    // browser sends us a string of field name/value pairs from HTML form
    // retrieve the value for each appropriate field name
    form_iterator st = cgi.getElement("search_type");
+   form_iterator bibleV = cgi.getElement("BibleV");
    form_iterator book = cgi.getElement("book");
    form_iterator chapter = cgi.getElement("chapter");
    form_iterator verse = cgi.getElement("verse");
@@ -77,23 +78,59 @@ int main()
 
    // TODO: OTHER INPUT VALUE CHECKS ARE NEEDED ... but that's up to you!
 
+   if (nv != cgi.getElements().end())
+   {
+      int versenum = nv->getIntegerValue();
+      if (versenum <= 0)
+      {
+         cout << "<p>The amount of verses can't be 0 or less. </p>" << endl;
+	 validInput = false;
+      }
+      else
+      {
+         validInput = true;
+      }
+   }
+
+
    /* TODO: PUT CODE HERE TO CALL YOUR BIBLE CLASS FUNCTIONS
     *        TO LOOK UP THE REQUESTED VERSES
     */
 
     if (validInput)
 {
+    int theBook = bibleV->getIntegerValue(); //this makes everthing explode
     int bookNum = book->getIntegerValue();
     int chapterNum = chapter->getIntegerValue();
     int verseNum = verse->getIntegerValue();
+    int verseAmount = nv->getIntegerValue();
 
-    Bible bible;  // default
+    string s = "/home/class/csc3004/Bibles/web-complete"; //WEB default
 
+    if (theBook == 2)
+    {
+    s = "/home/class/csc3004/Bibles/kjv-complete"; //KJV
+    }
+    else if (theBook == 3)
+    {
+    s = "/home/class/csc3004/Bibles/dby-complete"; //DBY
+    }
+    else if (theBook == 4)
+    {
+    s = "/home/class/csc3004/Bibles/ylt-complete"; //YLT
+    }
+    else if (theBook == 5)
+    {
+    s = "/home/class/csc3004/Bibles/webster-complete"; //webster
+    }
+
+    Bible bible(s);
+    
     Ref ref(bookNum, chapterNum, verseNum);
 
     LookupResult status;
     Verse result = bible.lookup(ref, status);
-
+    
     if (status == SUCCESS)
     {
         cout << "<p><b>"
@@ -110,9 +147,28 @@ int main()
     {
         cout << "<p>" << bible.error(status) << "</p>" << endl;
     }
-
-    return 0;
+    
+    for (int x = 1; x != verseAmount; x++)
+    {
+        Verse result = bible.nextVerse(status);
+        Ref newRef = result.getRef();
+    
+        if (status == SUCCESS)
+        {
+            cout << "<p><b>"
+                 << Ref::bookNumberToName(newRef.getBook())  // convert number to name
+                 << " "
+                 << newRef.getChapter()
+                 << ":"
+                 << newRef.getVerse()
+                 << "</b> "
+                 << result.getVerse()  // just the verse text
+                 << "</p>" << endl;
+        }
     }
+
+//return 0;
+}
 
    /* SEND BACK THE RESULTS
     * Finally we send the result back to the client on the standard output stream
